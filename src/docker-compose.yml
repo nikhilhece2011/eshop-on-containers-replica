@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  sql.data:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+            SA_PASSWORD: "Nikhil@123"
+            ACCEPT_EULA: "Y"
+    ports:
+      - "1445:1433"    
+    networks:
+      - aspnetcoreapp-network
+
+
+  catalog.api:
+    build:
+      context: Services/Catalog/Catalog.API/
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionString=Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Nikhil@123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/mycertificatename.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    ports:
+      - 80
+      - 443
+      - "5000:443"
+      - "5001:80"
+    depends_on: 
+      - sql.data
+    networks:
+      - aspnetcoreapp-network
+
+networks:
+    aspnetcoreapp-network:
+        driver: bridge

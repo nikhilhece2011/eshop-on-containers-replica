@@ -16,6 +16,7 @@ services:
     build:
       context: Services/Catalog/Catalog.API/
       dockerfile: Dockerfile
+    image : shop/catalog
     environment:
       - ConnectionString=Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
       - ASPNETCORE_URLS=https://+:443;http://+:80

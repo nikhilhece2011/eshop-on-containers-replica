@@ -104,3 +104,4 @@ C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Ident
 C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API\obj\Debug\netcoreapp3.1\Identity.API.dll
 C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API\obj\Debug\netcoreapp3.1\Identity.API.pdb
 C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API\obj\Debug\netcoreapp3.1\Identity.API.genruntimeconfig.cache
+C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API\obj\Debug\netcoreapp3.1\Identity.API.csprojAssemblyReference.cache

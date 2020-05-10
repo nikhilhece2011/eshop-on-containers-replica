@@ -19,20 +19,55 @@ services:
     image : shop/catalog
     environment:
       - ConnectionString=Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=Nikhil@123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/mycertificatename.pfx
+      - ASPNETCORE_URLS=http://+:80
     volumes:
       - ~/.aspnet/https:/https:ro
     ports:
       - 80
-      - 443
-      - "5000:443"
-      - "5001:80"
+      - "5102:80"
     depends_on: 
       - sql.data
     networks:
       - aspnetcoreapp-network
+
+  identity.api:
+    build:
+      context: Services/Identity/Identity.API/
+      dockerfile: Dockerfile
+    image : shop/identity
+    environment:
+      - ConnectionString=Server=sql.data;Database=IdentityDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
+      - ASPNETCORE_URLS=http://+:80
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    ports:
+      - "5101:80"
+    depends_on: 
+      - sql.data
+    networks:
+      - aspnetcoreapp-network
+
+  mvc.client:
+    build:
+      context: Web/Client/
+      dockerfile: Dockerfile
+    image : shop/client
+    environment:
+      - CatalogUrl=http://catalog.api
+      - IdentityUrl=http://192.168.224.225:5101
+      - ASPNETCORE_URLS=http://+:80
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    ports:
+      - 80
+      - "5100:80"
+    depends_on: 
+      - catalog.api
+      - identity.api
+    networks:
+      - aspnetcoreapp-network
+    
+   
 
 networks:
     aspnetcoreapp-network:

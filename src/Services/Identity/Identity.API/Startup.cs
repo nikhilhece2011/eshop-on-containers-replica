@@ -7,23 +7,31 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.IO;
 
 namespace Identity.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _environment;
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration,
+            IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllersWithViews();
+            services.AddMvc();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -38,7 +46,6 @@ namespace Identity.API
                 .AddInMemoryIdentityResources(Config.Ids)
                 .AddInMemoryApiResources(Config.Apis)
                 .AddInMemoryClients(Config.Clients)
-                //.AddTestUsers(TestUsers.Users);
                 .AddAspNetIdentity<ApplicationUser>();
 
             builder.AddDeveloperSigningCredential();

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using WebMvc.Services;
 
@@ -30,6 +31,9 @@ namespace Client
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+            var callBackUrl = Configuration.GetValue<string>("CallBackUrl");
+
             services.AddSingleton<IHttpClient, CustomHttpClient>();
             services.Configure<GlobalSettings>(Configuration);
             services.AddTransient<ICatalogService, CatalogService>();
@@ -46,25 +50,30 @@ namespace Client
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
                 options.AccessDeniedPath = "/Authorization/AccessDenied";
+                
             })
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
+               
+                options.RequireHttpsMetadata = false;
+                IdentityModelEventSource.ShowPII = true;
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authority = "https://localhost:44318/";
-                options.ClientId = "imagegalleryclient";
+                options.Authority = identityUrl.ToString();
+                //options.MetadataAddress = $"identityUrl.ToString() + "/.well-known/openid-configuration";
+                options.ClientId = "mvcclient";
                 options.ResponseType = "code";
                 options.UsePkce = false;
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("address");
-                options.Scope.Add("roles");
-                options.Scope.Add("imagegalleryapi");
-                options.Scope.Add("subscriptionlevel");
-                options.Scope.Add("country");
+                //options.Scope.Add("roles");
+                options.Scope.Add("catalogapi");
+                //options.Scope.Add("subscriptionlevel");
+                //options.Scope.Add("country");
                 options.Scope.Add("offline_access");
-                options.ClaimActions.MapUniqueJsonKey("role", "role");
-                options.ClaimActions.MapUniqueJsonKey("subscriptionlevel", "subscriptionlevel");
-                options.ClaimActions.MapUniqueJsonKey("country", "country");
+                //options.ClaimActions.MapUniqueJsonKey("role", "role");
+                //options.ClaimActions.MapUniqueJsonKey("subscriptionlevel", "subscriptionlevel");
+                //options.ClaimActions.MapUniqueJsonKey("country", "country");
                 options.SaveTokens = true;
                 options.ClientSecret = "secret";
                 options.GetClaimsFromUserInfoEndpoint = true;
@@ -73,6 +82,7 @@ namespace Client
                     NameClaimType = JwtClaimTypes.Name,
                     RoleClaimType = JwtClaimTypes.Role
                 };
+                //options.Configuration = new Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectConfiguration();
             });
         }
 
@@ -98,7 +108,7 @@ namespace Client
             {
                 endpoints.MapControllerRoute(
                  name: "default",
-                 pattern: "{controller=Catalog}/{action=Index}/{id?}");
+                 pattern: "{controller=Default}/{action=Index}/{id?}");
             });
         }
     }

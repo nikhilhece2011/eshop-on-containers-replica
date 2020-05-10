@@ -119,3 +119,4 @@ C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client\obj\Debug\ne
 C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
 C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client\obj\Debug\netcoreapp3.1\Razor\Views\_ViewStart.cshtml.g.cs
+C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LoginPartial.cshtml.g.cs

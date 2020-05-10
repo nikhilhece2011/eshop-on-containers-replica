@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebMvc.Models;
 using WebMvc.Services;
@@ -10,6 +11,7 @@ using WebMvc.ViewModels;
 
 namespace WebMvc.Controllers
 {
+    [Authorize]
     public class CatalogController : Controller
     {
         private ICatalogService _catalogSvc;

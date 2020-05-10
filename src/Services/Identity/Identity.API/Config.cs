@@ -16,18 +16,18 @@ namespace Identity.API
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Address(),
-                new IdentityResource("roles","Your role(s)",new List<string>()
-                {
-                    "role"
-                }),
-                new IdentityResource("country","Name of coutry you're living in",new List<string>(){ "country" }),
-                new IdentityResource("subscriptionlevel","Subscription Level",new List<string>(){ "subscriptionlevel" })
+                //new IdentityResource("roles","Your role(s)",new List<string>()
+                //{
+                //    "role"
+                //}),
+                //new IdentityResource("country","Name of coutry you're living in",new List<string>(){ "country" }),
+                //new IdentityResource("subscriptionlevel","Subscription Level",new List<string>(){ "subscriptionlevel" })
             };
 
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-             new ApiResource("imagegalleryapi","Image Gallery API")
+             new ApiResource("catalogapi","Catalog API")
             };
 
         public static IEnumerable<Client> Clients =>
@@ -35,24 +35,24 @@ namespace Identity.API
             {
                 new Client()
                 {
-                    ClientName = "Image Gallery",
-                    ClientId = "imagegalleryclient",
+                    ClientName = "MVC Client",
+                    ClientId = "mvcclient",
                     AllowOfflineAccess = true,
                     AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris = new List<string>(){ "https://localhost:44339/signin-oidc" },
+                    RedirectUris = new List<string>(){ "http://localhost:5100/signin-oidc" },
                     PostLogoutRedirectUris = new List<string>()
                     {
-                        "https://localhost:44339/signout-callback-oidc"
+                        "http://localhost:5100/signout-callback-oidc"
                     },
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
-                        "roles",
-                        "imagegalleryapi",
-                        "country",
-                        "subscriptionlevel"
+                        //"roles",
+                        "catalogapi",
+                        //"country",
+                        //"subscriptionlevel"
                     },
                     ClientSecrets =
                     {

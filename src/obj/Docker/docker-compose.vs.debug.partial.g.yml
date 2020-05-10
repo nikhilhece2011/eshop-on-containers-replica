@@ -12,20 +12,74 @@ services:
     environment:
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
-      - NUGET_FALLBACK_PACKAGES=/root/.nuget/fallbackpackages
+      #- NUGET_FALLBACK_PACKAGES=$container_paths_to_fallback_packages_catalog.api$
     volumes:
       - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Catalog\Catalog.API:/app
       - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Catalog\Catalog.API:/src
       - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
-      - C:\Users\3frames-61\.nuget\packages\:/root/.nuget/packages:ro
-      - C:\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages:ro
+#$nuget_volume_mapping_catalog.api$
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
     entrypoint: tail -f /dev/null
     labels:
       com.microsoft.visualstudio.debuggee.program: "dotnet"
-      com.microsoft.visualstudio.debuggee.arguments: " --additionalProbingPath /root/.nuget/packages --additionalProbingPath /root/.nuget/fallbackpackages  \"\""
+      #com.microsoft.visualstudio.debuggee.arguments: " $debuggee_arguments_probing_paths_catalog.api$ \"\""
+      com.microsoft.visualstudio.debuggee.workingdirectory: "/app"
+      com.microsoft.visualstudio.debuggee.killprogram: "/bin/sh -c \"if PID=$$(pidof dotnet); then kill $$PID; fi\""
+    tty: true
+  identity.api:
+    image: shop/identity:dev
+    container_name: Identity.API
+    build:
+      target: publishcode
+      labels:
+        com.microsoft.created-by: "visual-studio"
+        com.microsoft.visual-studio.project-name: "Identity.API"
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
+      #- NUGET_FALLBACK_PACKAGES=$container_paths_to_fallback_packages_identity.api$
+    volumes:
+      - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API:/app
+      - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API:/src
+      - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
+#$nuget_volume_mapping_identity.api$
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+
+    entrypoint: tail -f /dev/null
+    labels:
+      com.microsoft.visualstudio.debuggee.program: "dotnet"
+      #com.microsoft.visualstudio.debuggee.arguments: " $debuggee_arguments_probing_paths_identity.api$ \"\""
+      com.microsoft.visualstudio.debuggee.workingdirectory: "/app"
+      com.microsoft.visualstudio.debuggee.killprogram: "/bin/sh -c \"if PID=$$(pidof dotnet); then kill $$PID; fi\""
+    tty: true
+
+  mvc.client:
+    image: shop/client:dev
+    container_name: Client
+    build:
+      target: publishcode
+      labels:
+        com.microsoft.created-by: "visual-studio"
+        com.microsoft.visual-studio.project-name: "Client"
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
+      #- NUGET_FALLBACK_PACKAGES=$container_paths_to_fallback_packages_mvc.client$
+    volumes:
+      - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client:/app
+      - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client:/src
+      - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
+#$nuget_volume_mapping_mvc.client$
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+
+    entrypoint: tail -f /dev/null
+    labels:
+      com.microsoft.visualstudio.debuggee.program: "dotnet"
+      #com.microsoft.visualstudio.debuggee.arguments: " $debuggee_arguments_probing_paths_mvc.client$ \"\""
       com.microsoft.visualstudio.debuggee.workingdirectory: "/app"
       com.microsoft.visualstudio.debuggee.killprogram: "/bin/sh -c \"if PID=$$(pidof dotnet); then kill $$PID; fi\""
     tty: true

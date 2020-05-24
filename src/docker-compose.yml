@@ -27,7 +27,7 @@ services:
       - ConnectionString=Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
       - ASPNETCORE_URLS=http://+:80
       - ExternalCatalogBaseUrl=http://localhost:5102/pics
-      - AuthorityUrl=http://10.100.16.67:5101
+      - AuthorityUrl=http://10.100.16.63:5101
     volumes:
       - ~/.aspnet/https:/https:ro
     ports:
@@ -76,7 +76,7 @@ services:
     image : shop/client
     environment:
       - CatalogUrl=http://catalog.api
-      - IdentityUrl=http://10.100.16.67:5101
+      - IdentityUrl=http://10.100.16.63:5101
       - ASPNETCORE_URLS=http://+:80
     volumes:
       - ~/.aspnet/https:/https:ro

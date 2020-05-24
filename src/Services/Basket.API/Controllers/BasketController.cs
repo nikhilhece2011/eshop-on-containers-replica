@@ -4,12 +4,14 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Basket.API.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Basket.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class BasketController : Controller
     {
         private ICartRepository _repository;

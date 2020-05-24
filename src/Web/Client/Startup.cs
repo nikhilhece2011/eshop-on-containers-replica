@@ -103,6 +103,7 @@ namespace Client
                 options.Scope.Add("address");
                 //options.Scope.Add("roles");
                 options.Scope.Add("catalogapi");
+                options.Scope.Add("basketapi");
                 //options.Scope.Add("subscriptionlevel");
                 //options.Scope.Add("country");
                 options.Scope.Add("offline_access");

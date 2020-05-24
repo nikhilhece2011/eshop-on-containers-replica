@@ -27,7 +27,8 @@ namespace Identity.API
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-             new ApiResource("catalogapi","Catalog API")
+             new ApiResource("basketapi","Basket API"),
+             new ApiResource("catalogapi","Catalog API"),
             };
 
         public static IEnumerable<Client> Clients =>
@@ -51,8 +52,30 @@ namespace Identity.API
                         IdentityServerConstants.StandardScopes.Address,
                         //"roles",
                         "catalogapi",
+                        "basketapi"
                         //"country",
                         //"subscriptionlevel"
+                    },
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                },
+                new Client()
+                {
+                    ClientName = "Basket Swagger Client",
+                    ClientId = "basketswaggerclient",
+                    AllowOfflineAccess = true,
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = new List<string>(){ "http://localhost:5103/swagger/o2c.html" },
+                    PostLogoutRedirectUris = new List<string>()
+                    {
+                        "http://localhost:5103/swagger/"
+                    },
+                    AllowedScopes =
+                    {
+                       "basketapi"
                     },
                     ClientSecrets =
                     {

@@ -2,6 +2,27 @@ networks:
   aspnetcoreapp-network:
     driver: bridge
 services:
+  basket.api:
+    build:
+      context: C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Basket.API
+      dockerfile: Dockerfile
+    depends_on:
+    - basket.data
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    image: shop/basket
+    networks:
+      aspnetcoreapp-network: {}
+    ports:
+    - published: 5103
+      target: 80
+  basket.data:
+    image: redis:alpine
+    networks:
+      aspnetcoreapp-network: {}
+    ports:
+    - published: 6377
+      target: 6379
   catalog.api:
     build:
       context: C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Catalog\Catalog.API
@@ -10,13 +31,15 @@ services:
     - sql.data
     environment:
       ASPNETCORE_URLS: http://+:80
+      AuthorityUrl: http://10.100.16.67:5101
       ConnectionString: Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
+      ExternalCatalogBaseUrl: http://localhost:5102/pics
     image: shop/catalog
     networks:
       aspnetcoreapp-network: {}
     ports:
     - target: 80
-    - published: 5101
+    - published: 5102
       target: 80
     volumes:
     - C:\Users\3frames-61\.aspnet\https:/https:ro
@@ -33,7 +56,7 @@ services:
     networks:
       aspnetcoreapp-network: {}
     ports:
-    - published: 5100
+    - published: 5101
       target: 80
     volumes:
     - C:\Users\3frames-61\.aspnet\https:/https:ro
@@ -47,13 +70,13 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80
       CatalogUrl: http://catalog.api
-      IdentityUrl: http://10.0.75.1:5100
+      IdentityUrl: http://10.100.16.67:5101
     image: shop/client
     networks:
       aspnetcoreapp-network: {}
     ports:
     - target: 80
-    - published: 5102
+    - published: 5100
       target: 80
     volumes:
     - C:\Users\3frames-61\.aspnet\https:/https:ro

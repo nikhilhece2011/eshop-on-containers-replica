@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Catalog.API.Data;
 using Catalog.API.Domain;
 using Catalog.API.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Options;
 
 namespace Catalog.API.Controllers
 {
+    //[Authorize]
     [Produces("application/json")]
     [Route("api/Catalog")]
     public class CatalogController : Controller

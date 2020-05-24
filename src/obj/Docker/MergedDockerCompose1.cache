@@ -2,61 +2,181 @@ networks:
   aspnetcoreapp-network:
     driver: bridge
 services:
+  basket.api:
+    build:
+      context: C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Basket.API
+      dockerfile: Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: Basket.API
+      target: publishcode
+    container_name: Basket.API
+    depends_on:
+    - basket.data
+    entrypoint: tail -f /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: /root/.nuget/fallbackpackages
+    image: shop/basket:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages
+        --additionalProbingPath /root/.nuget/fallbackpackages  "/app/bin/Debug/netcoreapp3.1/Basket.API.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    networks:
+      aspnetcoreapp-network: {}
+    ports:
+    - published: 5103
+      target: 80
+    tty: true
+    volumes:
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Basket.API:/app:rw
+    - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\3frames-61\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\3frames-61\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages:ro
+    - C:\Users\3frames-61\.nuget\packages:/root/.nuget/packages:ro
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Basket.API:/src:rw
+  basket.data:
+    image: redis:alpine
+    networks:
+      aspnetcoreapp-network: {}
+    ports:
+    - published: 6377
+      target: 6379
   catalog.api:
     build:
       context: C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Catalog\Catalog.API
       dockerfile: Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: Catalog.API
+      target: publishcode
+    container_name: Catalog.API
     depends_on:
     - sql.data
+    entrypoint: tail -f /dev/null
     environment:
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
       ASPNETCORE_URLS: http://+:80
+      AuthorityUrl: http://10.100.16.67:5101
       ConnectionString: Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
-    image: shop/catalog
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      ExternalCatalogBaseUrl: http://localhost:5102/pics
+      NUGET_FALLBACK_PACKAGES: /root/.nuget/fallbackpackages
+    image: shop/catalog:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages
+        --additionalProbingPath /root/.nuget/fallbackpackages  "/app/bin/Debug/netcoreapp3.1/Catalog.API.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
     networks:
       aspnetcoreapp-network: {}
     ports:
     - target: 80
     - published: 5102
       target: 80
+    tty: true
     volumes:
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Catalog\Catalog.API:/app:rw
     - C:\Users\3frames-61\.aspnet\https:/https:ro
+    - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\3frames-61\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\3frames-61\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages:ro
+    - C:\Users\3frames-61\.nuget\packages:/root/.nuget/packages:ro
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Catalog\Catalog.API:/src:rw
   identity.api:
     build:
       context: C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API
       dockerfile: Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: Identity.API
+      target: publishcode
+    container_name: Identity.API
     depends_on:
     - sql.data
+    entrypoint: tail -f /dev/null
     environment:
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
       ASPNETCORE_URLS: http://+:80
       ConnectionString: Server=sql.data;Database=IdentityDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
-    image: shop/identity
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: /root/.nuget/fallbackpackages
+    image: shop/identity:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages
+        --additionalProbingPath /root/.nuget/fallbackpackages  "/app/bin/Debug/netcoreapp3.1/Identity.API.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
     networks:
       aspnetcoreapp-network: {}
     ports:
     - published: 5101
       target: 80
+    tty: true
     volumes:
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API:/app:rw
     - C:\Users\3frames-61\.aspnet\https:/https:ro
+    - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\3frames-61\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\3frames-61\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages:ro
+    - C:\Users\3frames-61\.nuget\packages:/root/.nuget/packages:ro
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Services\Identity\Identity.API:/src:rw
   mvc.client:
     build:
       context: C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client
       dockerfile: Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: Client
+      target: publishcode
+    container_name: Client
     depends_on:
     - catalog.api
     - identity.api
+    entrypoint: tail -f /dev/null
     environment:
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
       ASPNETCORE_URLS: http://+:80
       CatalogUrl: http://catalog.api
-      IdentityUrl: http://192.168.224.225:5101
-    image: shop/client
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      IdentityUrl: http://10.100.16.67:5101
+      NUGET_FALLBACK_PACKAGES: /root/.nuget/fallbackpackages
+    image: shop/client:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages
+        --additionalProbingPath /root/.nuget/fallbackpackages  "/app/bin/Debug/netcoreapp3.1/Client.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
     networks:
       aspnetcoreapp-network: {}
     ports:
     - target: 80
     - published: 5100
       target: 80
+    tty: true
     volumes:
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client:/app:rw
     - C:\Users\3frames-61\.aspnet\https:/https:ro
+    - C:\Users\3frames-61\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\3frames-61\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\3frames-61\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages:ro
+    - C:\Users\3frames-61\.nuget\packages:/root/.nuget/packages:ro
+    - C:\Users\3frames-61\Desktop\eShopOnContainersReplica\src\Web\Client:/src:rw
   sql.data:
     environment:
       ACCEPT_EULA: "Y"

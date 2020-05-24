@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "6c+5lgMEVlBfoDfXh/MBmdbdUMYa3NJ72s4YsdPy9TqzRllCZ9nUyq9ys/CVy33jhq9NPnrjzkrxOd7a6VBGfQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\3frames-61\\Desktop\\eShopOnContainersReplica\\src\\ApiGateways\\Web.Bff.Shopping\\Web.Bff.ApiGateway\\Web.Bff.ApiGateway.csproj",
+  "expectedPackageFiles": [
+    "C:\\Program Files (x86)\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.razor.design\\2.1.2\\microsoft.aspnetcore.razor.design.2.1.2.nupkg.sha512"
+  ],
+  "logs": []
+}

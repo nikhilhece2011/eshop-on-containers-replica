@@ -8,5 +8,6 @@ namespace Catalog.API
     public class GlobalSettings
     {
         public string ExternalCatalogBaseUrl { get; set; }
+        public string AuthorityUrl { get; set; }
     }
 }

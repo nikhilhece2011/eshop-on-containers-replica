@@ -11,6 +11,12 @@ services:
     networks:
       - aspnetcoreapp-network
 
+  basket.data:
+    image: redis:alpine
+    ports:
+      - "6377:6379"  
+    networks:
+      - aspnetcoreapp-network 
 
   catalog.api:
     build:
@@ -20,6 +26,8 @@ services:
     environment:
       - ConnectionString=Server=sql.data;Database=CatalogDB;User Id=SA;Password=Nikhil@123;MultipleActiveResultSets=True
       - ASPNETCORE_URLS=http://+:80
+      - ExternalCatalogBaseUrl=http://localhost:5102/pics
+      - AuthorityUrl=http://10.100.16.67:5101
     volumes:
       - ~/.aspnet/https:/https:ro
     ports:
@@ -27,6 +35,20 @@ services:
       - "5102:80"
     depends_on: 
       - sql.data
+    networks:
+      - aspnetcoreapp-network
+
+  basket.api:
+    build: 
+      context: Services/Basket.API/
+      dockerfile: Dockerfile
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development 
+    image: shop/basket
+    ports:
+      - "5103:80"
+    depends_on:
+      - basket.data
     networks:
       - aspnetcoreapp-network
 
@@ -54,7 +76,7 @@ services:
     image : shop/client
     environment:
       - CatalogUrl=http://catalog.api
-      - IdentityUrl=http://192.168.224.225:5101
+      - IdentityUrl=http://10.100.16.67:5101
       - ASPNETCORE_URLS=http://+:80
     volumes:
       - ~/.aspnet/https:/https:ro

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.API.Data;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +25,8 @@ namespace Catalog.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var authorityUrl = Configuration.GetValue<string>("AuthorityUrl");
+
             services.Configure<GlobalSettings>(Configuration);
 
             services.AddDbContext<CatalogContext>(options =>
@@ -32,6 +35,14 @@ namespace Catalog.API
             });
 
             services.AddMvc();
+
+            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //    .AddIdentityServerAuthentication(options =>
+            //    {
+            //        options.Authority = authorityUrl.ToString();
+            //        options.ApiName = "catalogapi";
+            //        options.RequireHttpsMetadata = false;
+            //    });
 
             services.AddSwaggerGen(options =>
             {
@@ -53,14 +64,21 @@ namespace Catalog.API
                 app.UseDeveloperExceptionPage();
             }
 
+            
+
             app.UseStaticFiles();
 
             app.UseSwagger()
                 .UseSwaggerUI(options => options.SwaggerEndpoint($"/swagger/v1/swagger.json", "ProductCatalogAPI V1"));
 
             app.UseRouting();
+            //app.UseAuthentication();
+
+            //app.UseAuthorization();
             app.UseEndpoints(options => 
                             options.MapDefaultControllerRoute());
+
+            
         }
     }
 }

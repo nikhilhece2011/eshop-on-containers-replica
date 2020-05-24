@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Client.HttpHandlers;
 using Client.Infrastructure;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using WebMvc.Services;
 
 namespace Client
@@ -22,17 +24,50 @@ namespace Client
     public class Startup
     {
         private IConfiguration Configuration;
-
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment Environment;
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            Environment = webHostEnvironment;
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+            var catalogUrl = Configuration.GetValue<string>("CatalogUrl");
             var callBackUrl = Configuration.GetValue<string>("CallBackUrl");
+
+            //services.AddHttpContextAccessor();
+
+            //services.AddTransient<BearerHttpHandler>();
+
+            IMvcBuilder builder = services.AddRazorPages();
+#if DEBUG
+            if (Environment.IsDevelopment())
+            {
+                builder.AddRazorRuntimeCompilation();
+            }
+
+
+#endif
+
+
+            services.AddHttpClient("APIClient", client =>
+            {
+                client.BaseAddress = new Uri(catalogUrl.ToString());
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+            }).AddHttpMessageHandler<BearerHttpHandler>();
+
+            services.AddHttpClient("IDPClient", client =>
+            {
+                client.BaseAddress = new Uri(identityUrl.ToString());
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+            });
+
+
 
             services.AddSingleton<IHttpClient, CustomHttpClient>();
             services.Configure<GlobalSettings>(Configuration);
@@ -50,11 +85,11 @@ namespace Client
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
                 options.AccessDeniedPath = "/Authorization/AccessDenied";
-                
+
             })
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
-               
+
                 options.RequireHttpsMetadata = false;
                 IdentityModelEventSource.ShowPII = true;
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
